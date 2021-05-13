@@ -64,7 +64,7 @@ contract MerchToken is ERC721, Ownable {
 
         // ***********TO DO:*************  Generate psedorandom numbers
         // by running blocktimestamp+address -> blackbox hashing function -> determine from last digit of result
-        bytes32 hash1 = sha256(abi.encode(block.timestamp, blockhash(block.number)));
+        bytes32 hash1 = sha256(abi.encode(uint256(address(this)) + block.timestamp));
         bytes32 hash2 = keccak256(abi.encode(hash1));
         uint256 result = uint256(hash2);
 
@@ -140,7 +140,9 @@ contract MerchToken is ERC721, Ownable {
     //******TO DO************
     // Changes the price that must be paid to buy a particular token
     function changePrice(uint256 _tokenId, uint256 _newPrice) public {
-
+        require(_newPrice != 0 && _exists(_tokenId));
+        require(ownerOf(_tokenId) == msg.sender);
+        tokenInfos[_tokenId].price = _newPrice;
     }
 
     // Allow a token to be sold
